@@ -11,18 +11,21 @@ A tiny, original chess engine in one Python file (under 4 KB, stdlib only).
 - 0x88 board, pseudo-legal move generation with make/unmake in place and a
   king-safety filter.
 - Negamax alpha-beta with principal variation search (PVS: null-window +
-  re-search), a transposition table (Zobrist hashing, exact/lower/upper
-  bounds, mate-distance scoring), killer + history ordering on top of
-  MVV-LVA, narrow-window root search, quiescence over captures and
-  promotions, and repetition detection against the full game history.
+  re-search), null-move pruning (R=3, never in check), a transposition
+  table (Zobrist hashing, exact/lower/upper bounds, mate-distance scoring),
+  killer + history ordering on top of MVV-LVA, narrow-window root search,
+  quiescence over captures and promotions, and repetition detection against
+  the full game history.
 - A compact 80-slot opening book (two moves per opening per colour, mined
   from the kit's own practice trials at a 2M-node budget and encoded as a
   640-char string) plays the first two moves of each game when legal.
 - Fixed node budget N=250,000 per move (deterministic: no wall clock, no
-  randomness), ~3.5s per move typical, max 5.4s in practice trials.
-- Evaluation: material, a shared centre piece-square table, pawn advancement,
-  rook-on-7th, bishop pair, and a tapered king-safety term that rewards king
-  centralisation in the endgame and discourages it in the middlegame.
+  randomness), ~5s per move typical, max under the 10s/move limit in practice
+  trials (no time losses).
+- Evaluation: material plus a tapered PeSTO-style evaluation — separate
+  middlegame/endgame piece-square tables per piece (hand-designed, 384 values
+  packed into two 192-char strings), interpolated by game phase, plus bishop
+  pair. Round 5 practice trial-0: Elo 1654, 5W-0D-1L, spare 539 plies.
 - Promotions are always to queen.
 
 ## Protocol
